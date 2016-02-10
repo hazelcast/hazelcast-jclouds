@@ -349,6 +349,8 @@
                         <configuration combine.self="override">
                             <redirectTestOutputToFile>true</redirectTestOutputToFile>
                             <testFailureIgnore>true</testFailureIgnore>
+                            <groups>com.hazelcast.test.annotation.QuickTest</groups>
+                            <excludedGroups>com.hazelcast.test.annotation.SlowTest</excludedGroups>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -510,6 +512,8 @@
                                 -Dhazelcast.logging.type=none
                                 -Dhazelcast.test.use.network=true
                             </argLine>
+                            <groups>com.hazelcast.test.annotation.QuickTest</groups>
+                            <excludedGroups>com.hazelcast.test.annotation.SlowTest</excludedGroups>
                         </configuration>
                     </plugin>
                 </plugins>
