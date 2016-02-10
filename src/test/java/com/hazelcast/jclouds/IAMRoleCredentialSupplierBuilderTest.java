@@ -52,6 +52,7 @@ public class IAMRoleCredentialSupplierBuilderTest extends HazelcastTestSupport {
         BufferedReader br = new BufferedReader(sr);
         IAMRoleCredentialSupplierBuilder iamRoleCredentialSupplierBuilder = new IAMRoleCredentialSupplierBuilder();
         Map map = iamRoleCredentialSupplierBuilder.parseIamRole(br);
+
         assertEquals("Success", map.get("Code"));
         assertEquals("2015-09-06T21:17:26Z", map.get("LastUpdated"));
         assertEquals("AWS-HMAC", map.get("Type"));
@@ -71,6 +72,7 @@ public class IAMRoleCredentialSupplierBuilderTest extends HazelcastTestSupport {
         when(iamRoleCredentialSupplierBuilder.build()).thenCallRealMethod();
         iamRoleCredentialSupplierBuilder.withRoleName("example");
         SessionCredentials sessionCredentials = iamRoleCredentialSupplierBuilder.build();
+
         assertEquals("ExampleAccessKeyId", sessionCredentials.getAccessKeyId());
         assertEquals("ExampleSecretAccessKey", sessionCredentials.getSecretAccessKey());
         assertEquals("ExampleToken", sessionCredentials.getSessionToken());

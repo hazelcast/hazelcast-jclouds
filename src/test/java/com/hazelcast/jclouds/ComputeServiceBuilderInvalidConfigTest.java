@@ -57,6 +57,7 @@ public class ComputeServiceBuilderInvalidConfigTest extends HazelcastTestSupport
 
         String configXML = configTemplate.replace("${PROPERTIES_PLACE_HOLDER}", propertiesUnderTest);
         Config config = new XmlConfigBuilder(new ByteArrayInputStream(stringToBytes(configXML))).build();
+
         Hazelcast.newHazelcastInstance(config);
     }
 
@@ -70,6 +71,7 @@ public class ComputeServiceBuilderInvalidConfigTest extends HazelcastTestSupport
 
         String configXML = configTemplate.replace("${PROPERTIES_PLACE_HOLDER}", propertiesUnderTest);
         Config config = new XmlConfigBuilder(new ByteArrayInputStream(stringToBytes(configXML))).build();
+
         Hazelcast.newHazelcastInstance(config);
     }
 
@@ -83,6 +85,7 @@ public class ComputeServiceBuilderInvalidConfigTest extends HazelcastTestSupport
 
         String configXML = configTemplate.replace("${PROPERTIES_PLACE_HOLDER}", propertiesUnderTest);
         Config config = new XmlConfigBuilder(new ByteArrayInputStream(stringToBytes(configXML))).build();
+
         Hazelcast.newHazelcastInstance(config);
     }
 
@@ -94,6 +97,7 @@ public class ComputeServiceBuilderInvalidConfigTest extends HazelcastTestSupport
 
         String configXML = configTemplate.replace("${PROPERTIES_PLACE_HOLDER}", propertiesUnderTest);
         Config config = new XmlConfigBuilder(new ByteArrayInputStream(stringToBytes(configXML))).build();
+
         Hazelcast.newHazelcastInstance(config);
     }
 

@@ -1,7 +1,7 @@
 package com.hazelcast.jclouds.integration;
 
 import com.hazelcast.test.HazelcastSerialClassRunner;
-import com.hazelcast.test.annotation.JCloudsTest;
+import com.hazelcast.test.annotation.SlowTest;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.experimental.categories.Category;
@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import java.util.HashMap;
 import java.util.Map;
 
-@Category(JCloudsTest.class)
+@Category(SlowTest.class)
 @RunWith(HazelcastSerialClassRunner.class)
 public class AWSEC2LiveTest extends AbstractLiveTest {
 
@@ -32,7 +32,6 @@ public class AWSEC2LiveTest extends AbstractLiveTest {
     public static void destroyNodes() throws Exception {
         builder.destroyNodes();
     }
-
 
     @Override
     protected Map<String, Comparable> getProperties() {
