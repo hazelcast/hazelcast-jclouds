@@ -44,6 +44,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         Map<String,Comparable> properties = new HashMap<String, Comparable>();
         properties.put("key", "value");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
+
         assertEquals(1, builder.getProperties().size());
         assertEquals("value", builder.getProperties().get("key"));
     }
@@ -51,6 +52,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     @Test
     public void test_getServicePort_returns_default_hz_port() throws Exception {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
+
         assertEquals(builder.getServicePort(), NetworkConfig.DEFAULT_PORT);
     }
 
@@ -59,6 +61,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("hz-port", 5703);
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
+
         assertEquals(builder.getServicePort(), 5703);
         assertNotEquals(builder.getServicePort(), NetworkConfig.DEFAULT_PORT);
     }
@@ -97,6 +100,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         builder.setComputeService(mockComputeService);
         doReturn(mockComputeServiceContext).when(mockComputeService).getContext();
         builder.destroy();
+
         verify(mockComputeServiceContext).close();
     }
 
@@ -107,6 +111,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         properties.put("zones", "zone1,zone2,zone3");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
+
         assertEquals(3, builder.getZonesSet().size());
         assertTrue(builder.getZonesSet().contains("zone1"));
         assertTrue(builder.getZonesSet().contains("zone2"));
@@ -119,6 +124,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         properties.put("zones", "zone1");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
+
         assertEquals(1, builder.getZonesSet().size());
         assertTrue(builder.getZonesSet().contains("zone1"));
     }
@@ -129,6 +135,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         properties.put("regions", "region1,region2,region3");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
+
         assertEquals(3, builder.getRegionsSet().size());
         assertTrue(builder.getRegionsSet().contains("region1"));
         assertTrue(builder.getRegionsSet().contains("region2"));
@@ -141,6 +148,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         properties.put("regions", "region1");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
+
         assertEquals(1, builder.getRegionsSet().size());
         assertTrue(builder.getRegionsSet().contains("region1"));
     }
@@ -245,6 +253,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     public void test_buildNodeFilter_with_null_NodeMetadata() throws Exception {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
         Predicate<ComputeMetadata> nodeFilter = builder.buildNodeFilter();
+
         assertFalse(nodeFilter.apply(null));
     }
 
@@ -357,6 +366,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         URL resourceUrl = getClass().
                 getResource("/google-json-credential.json");
         String decodedURL = URLDecoder.decode(resourceUrl.getFile(), "UTF-8");
+
         assertEquals("key", builder.getCredentialFromFile("google-compute-engine",
                 decodedURL));
     }
@@ -367,6 +377,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         URL resourceUrl = getClass().
                 getResource("/key.properties");
         String decodedURL = URLDecoder.decode(resourceUrl.getFile(), "UTF-8");
+
         assertEquals("cloudkey", builder.getCredentialFromFile("gogrid",
                 decodedURL));
     }
@@ -379,6 +390,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         properties.put("credential", "credential");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         ComputeService service = builder.build();
+
         assertEquals(AWSEC2ComputeService.class, service.getClass());
     }
 }
