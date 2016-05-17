@@ -21,34 +21,45 @@ import com.hazelcast.core.HazelcastException;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import com.hazelcast.nio.Address;
+import com.hazelcast.spi.discovery.AbstractDiscoveryStrategy;
 import com.hazelcast.spi.discovery.DiscoveryNode;
 import com.hazelcast.spi.discovery.DiscoveryStrategy;
 import com.hazelcast.spi.discovery.SimpleDiscoveryNode;
 import org.jclouds.compute.domain.NodeMetadata;
+import org.jclouds.domain.Location;
+import org.jclouds.domain.LocationScope;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.hazelcast.spi.partitiongroup.PartitionGroupMetaData.PARTITION_GROUP_HOST;
+import static com.hazelcast.spi.partitiongroup.PartitionGroupMetaData.PARTITION_GROUP_ZONE;
 
 /**
  * JClouds implementation of {@link DiscoveryStrategy}
  */
-public class JCloudsDiscoveryStrategy implements DiscoveryStrategy {
+public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     private static final ILogger LOGGER = Logger.getLogger(JCloudsDiscoveryStrategy.class);
     private final ComputeServiceBuilder computeServiceBuilder;
+    private final Map<String, Object> memberMetaData = new HashMap<String, Object>();
     /**
      * Instantiates a new JCloudsDiscoveryStrategy
      *
      * @param properties the properties
      */
     public JCloudsDiscoveryStrategy(Map<String, Comparable> properties) {
+        super(LOGGER, properties);
         this.computeServiceBuilder = new ComputeServiceBuilder(properties);
     }
 
     protected JCloudsDiscoveryStrategy(ComputeServiceBuilder computeServiceBuilder) {
+        super(LOGGER, new HashMap<String, Comparable>());
         this.computeServiceBuilder = computeServiceBuilder;
     }
 
@@ -88,17 +99,28 @@ public class JCloudsDiscoveryStrategy implements DiscoveryStrategy {
         computeServiceBuilder.destroy();
     }
 
+    @Override
+    public Map<String, Object> discoverLocalMetadata() {
+        return memberMetaData;
+    }
+
     private DiscoveryNode buildDiscoveredNode(NodeMetadata metadata) {
         Address privateAddressInstance = null;
         if (!metadata.getPrivateAddresses().isEmpty()) {
             InetAddress privateAddress = mapAddress(metadata.getPrivateAddresses().iterator().next());
             privateAddressInstance =  new Address(privateAddress, computeServiceBuilder.getServicePort());
+            if (privateAddress.getHostAddress().equals(getLocalHostAddress())) {
+                fetchMemberMetaData(metadata);
+            }
         }
 
         Address publicAddressInstance = null;
         if (!metadata.getPublicAddresses().isEmpty()) {
             InetAddress publicAddress = mapAddress(metadata.getPublicAddresses().iterator().next());
             publicAddressInstance =  new Address(publicAddress, computeServiceBuilder.getServicePort());
+            if (publicAddress.getHostAddress().equals(getLocalHostAddress())) {
+                fetchMemberMetaData(metadata);
+            }
         }
 
         return new SimpleDiscoveryNode(privateAddressInstance, publicAddressInstance);
@@ -112,6 +134,51 @@ public class JCloudsDiscoveryStrategy implements DiscoveryStrategy {
             return InetAddress.getByName(address);
         } catch (UnknownHostException e) {
             throw new InvalidConfigurationException("Address '" + address + "' could not be resolved");
+        }
+    }
+
+    private void fetchMemberMetaData(NodeMetadata metadata) {
+        Location location = metadata.getLocation();
+        while (location != null) {
+            String id = location.getId();
+            if (location.getScope().equals(LocationScope.ZONE)) {
+                if (id != null) {
+                   memberMetaData.put(PARTITION_GROUP_ZONE, id);
+                }
+            }
+            location = location.getParent();
+        }
+        memberMetaData.put(PARTITION_GROUP_HOST, metadata.getHostname());
+    }
+
+    public  String getLocalHostAddress() {
+        try {
+            InetAddress candidateAddress = null;
+            // Iterate all NICs (network interface cards)...
+            for (Enumeration ifaces = java.net.NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
+                java.net.NetworkInterface iface = (java.net.NetworkInterface) ifaces.nextElement();
+                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
+                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                    if (!inetAddr.isLoopbackAddress()) {
+                        if (inetAddr.isSiteLocalAddress()) {
+                            return inetAddr.getHostAddress();
+                        } else if (candidateAddress == null) {
+                            candidateAddress = inetAddr;
+                        }
+                    }
+                }
+            }
+            if (candidateAddress != null) {
+                return candidateAddress.getHostAddress();
+            }
+            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+            if (jdkSuppliedAddress == null) {
+                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return jdkSuppliedAddress.getHostAddress();
+        } catch (Exception e) {
+            LOGGER.warning("Failed to determine Host address: " + e);
+            return null;
         }
     }
 }
