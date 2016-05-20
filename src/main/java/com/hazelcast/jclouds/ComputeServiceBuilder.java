@@ -143,6 +143,7 @@ public class ComputeServiceBuilder {
         }
         return true;
     }
+
     public boolean isNodeInsideRegions(NodeMetadata metadata) {
         Location location = metadata.getLocation();
         while (location != null) {

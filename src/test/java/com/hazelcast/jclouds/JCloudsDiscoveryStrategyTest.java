@@ -16,8 +16,10 @@ import org.junit.runner.RunWith;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import static com.hazelcast.spi.partitiongroup.PartitionGroupMetaData.PARTITION_GROUP_HOST;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -64,6 +66,28 @@ public class JCloudsDiscoveryStrategyTest extends HazelcastTestSupport {
         }
 
     }
+
+    @Test
+    public void testShouldFetchHostMetadata() {
+        ComputeServiceBuilder mockComputeServiceBuilder = mock(ComputeServiceBuilder.class);
+        JCloudsDiscoveryStrategy jCloudsDiscoveryStrategy = new JCloudsDiscoveryStrategy(mockComputeServiceBuilder);
+        Set<NodeMetadata> nodes = new HashSet<NodeMetadata>();
+        HashSet<String> privateAdresses = new HashSet<String>();
+        privateAdresses.add(jCloudsDiscoveryStrategy.getLocalHostAddress());
+        nodes.add(new NodeMetadataImpl("", "", "dummy", null, null, new HashMap<String, String>(), new HashSet<String>(), null, null, null, null,
+                NodeMetadata.Status.RUNNING, "",
+                99999, privateAdresses, privateAdresses, null, "dummyHostName"));
+        doReturn(nodes).when(mockComputeServiceBuilder).getFilteredNodes();
+
+        Iterable<DiscoveryNode> runningNodes = jCloudsDiscoveryStrategy.discoverNodes();
+        Map<String, Object> localMetadata = jCloudsDiscoveryStrategy.discoverLocalMetadata();
+
+        for (DiscoveryNode node : runningNodes) {
+            assertTrue(localMetadata.get(PARTITION_GROUP_HOST).toString().startsWith("dummyHostName"));
+        }
+
+    }
+
 
     @Test
     public void testBuildCalled() {
