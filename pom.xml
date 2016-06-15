@@ -21,7 +21,7 @@
     <name>hazelcast-jclouds</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-jclouds</artifactId>
-    <version>3.7-SNAPSHOT</version>
+    <version>3.7-EA</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -504,7 +504,7 @@
         <profile>
             <id>master</id>
             <properties>
-                <hazelcast.version>3.7-SNAPSHOT</hazelcast.version>
+                <hazelcast.version>3.7-EA</hazelcast.version>
             </properties>
             <dependencies>
                 <dependency>
