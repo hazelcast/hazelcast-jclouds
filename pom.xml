@@ -21,7 +21,7 @@
     <name>hazelcast-jclouds</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-jclouds</artifactId>
-    <version>3.7-EA</version>
+    <version>3.7-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid JClouds Discovery Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -32,7 +32,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <jdk.version>1.6</jdk.version>
-        <hazelcast.version>3.7-EA</hazelcast.version>
+        <hazelcast.version>3.7-SNAPSHOT</hazelcast.version>
 
         <jclouds.version>1.9.1</jclouds.version>
         <log4j.version>1.2.12</log4j.version>
@@ -506,7 +506,7 @@
         <profile>
             <id>master</id>
             <properties>
-                <hazelcast.version>3.7-EA</hazelcast.version>
+                <hazelcast.version>3.7-SNAPSHOT</hazelcast.version>
             </properties>
             <dependencies>
                 <dependency>
