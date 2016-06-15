@@ -23,6 +23,8 @@
     <artifactId>hazelcast-jclouds</artifactId>
     <version>3.7-EA</version>
     <packaging>jar</packaging>
+    <description>Hazelcast In-Memory DataGrid JClouds Discovery Plugin</description>
+    <url>http://www.hazelcast.com/</url>
 
     <properties>
         <!-- needed for checkstyle/findbugs -->
