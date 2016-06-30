@@ -1,3 +1,9 @@
+# Table of Contents
+
+* [Discovering Members with jclouds](#discovering-members-with-jclouds)
+* [Configuring Dependencies for jclouds via Maven](#configuring-dependencies-for-jclouds-via-maven)
+* [Configuring IAM Roles for AWS](#configuring-iam-roles-for-aws)
+* [Discovering Members on Different Regions](#discovering-members-on-different-regions)
 
 # Discovering Members with jclouds
 
@@ -53,7 +59,7 @@ Property Name | Type | Description
 `role-name*`|String|Used for IAM role support specific to AWS (optional, but if defined, no identity or credential should be defined in the configuration).
 `credentialPath*`|String|Used for cloud providers which require an extra JSON or P12 key file. This denotes the path of that file. Only tested with Google Compute Engine. (Required if Google Compute Engine is used.)
 
-## Configuring Dependencies for jclouds via Maven
+# Configuring Dependencies for jclouds via Maven
 
 jclouds depends on many libraries internally and `hazelcast-jclouds.jar` does not contain any of them. If you want to use jclouds, we recommend that you use its dependency management tool. The following is a simple maven dependency configuration that uses the
 maven assembly plugin to create an uber JAR with the necessary jclouds properties.
@@ -126,7 +132,7 @@ maven assembly plugin to create an uber JAR with the necessary jclouds propertie
 ```
 
 
-## Configuring IAM Roles for AWS
+# Configuring IAM Roles for AWS
 
 IAM roles are used to make secure requests from your clients. You can provide the name of your IAM role that you created previously on your AWS console to the jclouds configuration. IAM roles only work in AWS and when a role name is provided, the other credentials' properties should be empty.
 
@@ -154,7 +160,7 @@ IAM roles are used to make secure requests from your clients. You can provide th
 ...
 ```
 
-## Discovering Members on Different Regions
+# Discovering Members on Different Regions
 
 You can define multiple regions in your jclouds configuration. By default, Hazelcast Discovery SPI uses private IP addresses for member connections. If you want the members to find each other over a different region, you must set the system property `hazelcast.discovery.public.ip.enabled` to `true`. In this way, the members on different regions can connect to each other by using public IPs.
 
