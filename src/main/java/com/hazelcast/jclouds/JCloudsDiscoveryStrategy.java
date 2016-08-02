@@ -48,6 +48,7 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
     private static final ILogger LOGGER = Logger.getLogger(JCloudsDiscoveryStrategy.class);
     private final ComputeServiceBuilder computeServiceBuilder;
     private final Map<String, Object> memberMetaData = new HashMap<String, Object>();
+
     /**
      * Instantiates a new JCloudsDiscoveryStrategy
      *
@@ -72,7 +73,7 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
     public Iterable<DiscoveryNode> discoverNodes() {
         List<DiscoveryNode> discoveryNodes = new ArrayList<DiscoveryNode>();
         try {
-            Iterable<? extends NodeMetadata> nodes =  computeServiceBuilder.getFilteredNodes();
+            Iterable<? extends NodeMetadata> nodes = computeServiceBuilder.getFilteredNodes();
             for (NodeMetadata metadata : nodes) {
                 if (metadata.getStatus() != NodeMetadata.Status.RUNNING) {
                     continue;
@@ -101,6 +102,9 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
 
     @Override
     public Map<String, Object> discoverLocalMetadata() {
+        if (memberMetaData.size() == 0) {
+            discoverNodes();
+        }
         return memberMetaData;
     }
 
@@ -108,7 +112,7 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
         Address privateAddressInstance = null;
         if (!metadata.getPrivateAddresses().isEmpty()) {
             InetAddress privateAddress = mapAddress(metadata.getPrivateAddresses().iterator().next());
-            privateAddressInstance =  new Address(privateAddress, computeServiceBuilder.getServicePort());
+            privateAddressInstance = new Address(privateAddress, computeServiceBuilder.getServicePort());
             if (privateAddress.getHostAddress().equals(getLocalHostAddress())) {
                 fetchMemberMetaData(metadata);
             }
@@ -117,7 +121,7 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
         Address publicAddressInstance = null;
         if (!metadata.getPublicAddresses().isEmpty()) {
             InetAddress publicAddress = mapAddress(metadata.getPublicAddresses().iterator().next());
-            publicAddressInstance =  new Address(publicAddress, computeServiceBuilder.getServicePort());
+            publicAddressInstance = new Address(publicAddress, computeServiceBuilder.getServicePort());
             if (publicAddress.getHostAddress().equals(getLocalHostAddress())) {
                 fetchMemberMetaData(metadata);
             }
@@ -143,7 +147,7 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
             String id = location.getId();
             if (location.getScope().equals(LocationScope.ZONE)) {
                 if (id != null) {
-                   memberMetaData.put(PARTITION_GROUP_ZONE, id);
+                    memberMetaData.put(PARTITION_GROUP_ZONE, id);
                 }
             }
             location = location.getParent();
@@ -151,7 +155,7 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
         memberMetaData.put(PARTITION_GROUP_HOST, metadata.getHostname());
     }
 
-    public  String getLocalHostAddress() {
+    public String getLocalHostAddress() {
         try {
             InetAddress candidateAddress = null;
             // Iterate all NICs (network interface cards)...
