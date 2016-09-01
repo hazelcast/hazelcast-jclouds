@@ -1,9 +1,14 @@
 # Table of Contents
 
+* [Supported Versions](#supported-versions)
 * [Discovering Members with jclouds](#discovering-members-with-jclouds)
 * [Configuring Dependencies for jclouds via Maven](#configuring-dependencies-for-jclouds-via-maven)
 * [Configuring IAM Roles for AWS](#configuring-iam-roles-for-aws)
 * [Discovering Members on Different Regions](#discovering-members-on-different-regions)
+
+# Supported Versions
+
+hazelcast-jclouds 3.7+ is compatible with hazelcast 3.7+
 
 # Discovering Members with jclouds
 
