@@ -5,6 +5,7 @@
 * [Configuring Dependencies for jclouds via Maven](#configuring-dependencies-for-jclouds-via-maven)
 * [Configuring IAM Roles for AWS](#configuring-iam-roles-for-aws)
 * [Discovering Members on Different Regions](#discovering-members-on-different-regions)
+* [Using jclouds With ZONE_AWARE Partition Group](#using-jclouds-with-zone_aware-partition-group)
 
 # Supported Versions
 
@@ -191,5 +192,16 @@ You can define multiple regions in your jclouds configuration. By default, Hazel
         </discovery-provider>
     </discovery-providers>
 </join>
+...
+```
+
+# Using jclouds With ZONE_AWARE Partition Group
+
+When you use jclouds as discovery provider, you can configure Hazelcast Partition Group configuration with jclouds.
+For more information please read: http://docs.hazelcast.org/docs/3.7/manual/html-single/index.html#partition-group-configuration
+
+```xml
+...
+<partition-group enabled="true" group-type="ZONE_AWARE" />
 ...
 ```
