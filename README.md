@@ -13,7 +13,7 @@ hazelcast-jclouds 3.7+ is compatible with hazelcast 3.7+
 
 # Discovering Members with jclouds
 
-Hazelcast members and native clients support jclouds&reg; for discovery. It is useful when you do not want to provide or you cannot provide the list of possible IP addresses on various cloud providers. However, currently, for AWS EC2 which is also based on jclouds, you still need to configure your cluster using the <aws> element as described in [Discovering Members within EC2 Cloud](https://github.com/hazelcast/hazelcast-aws/blob/master/README.md).
+Hazelcast members and native clients support jclouds&reg; for discovery. It is useful when you do not want to provide or you cannot provide the list of possible IP addresses on various cloud providers. 
 
 To configure your cluster to use jclouds auto-discovery, follow these steps:
 
@@ -165,6 +165,9 @@ IAM roles are used to make secure requests from your clients. You can provide th
 </join>
 ...
 ```
+
+Note that, for AWS EC2, you can also configure your cluster using the <aws> element as described in [Discovering Members within EC2 Cloud](https://github.com/hazelcast/hazelcast-aws/blob/master/README.md).
+
 
 # Discovering Members on Different Regions
 
