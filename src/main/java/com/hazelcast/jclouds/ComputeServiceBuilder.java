@@ -182,7 +182,7 @@ public class ComputeServiceBuilder {
             throw new UnsupportedOperationException("Both credential and credentialPath are set. Use only one method.");
         }
         if (credentialPath != null) {
-            credential = getCredentialFromFile(credential, credentialPath);
+            credential = getCredentialFromFile(cloudProvider, credentialPath);
         }
 
         if (LOGGER.isFinestEnabled()) {
