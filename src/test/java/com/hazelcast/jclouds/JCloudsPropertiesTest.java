@@ -15,12 +15,12 @@ import static junit.framework.TestCase.fail;
 public class JCloudsPropertiesTest extends HazelcastTestSupport {
 
     @Test
-    public void testConstructorIsPrivate()  {
+    public void testConstructorIsPrivate() {
         assertUtilityConstructor(JCloudsProperties.class);
     }
 
     @Test
-    public void portValueValidator_should_not_throw_ValidationException_when_configured_in_range_values() throws Exception{
+    public void portValueValidator_should_not_throw_ValidationException_when_configured_in_range_values() {
         try {
             JCloudsProperties.PortValueValidator valueValidator = new JCloudsProperties.PortValueValidator();
             valueValidator.validate(5701);
@@ -28,5 +28,4 @@ public class JCloudsPropertiesTest extends HazelcastTestSupport {
             fail("PortValueValidator should not throw ValidationException when configured in range values");
         }
     }
-
 }
