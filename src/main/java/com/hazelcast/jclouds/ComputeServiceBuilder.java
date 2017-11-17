@@ -98,8 +98,7 @@ public class ComputeServiceBuilder {
     }
 
     /**
-     * Injects already built ComputeService
-     * @param computeService
+     * Injects an already built ComputeService.
      */
     public void setComputeService(ComputeService computeService) {
         this.computeService = computeService;
@@ -110,7 +109,7 @@ public class ComputeServiceBuilder {
      *
      * @return the filtered nodes
      */
-    public  Iterable<? extends NodeMetadata> getFilteredNodes() {
+    public Iterable<? extends NodeMetadata> getFilteredNodes() {
         final String group = getOrNull(JCloudsProperties.GROUP);
         Set<? extends NodeMetadata> result = computeService.listNodesDetailsMatching(nodesFilter);
         Iterable<? extends NodeMetadata> filteredResult = new HashSet<NodeMetadata>();
@@ -158,8 +157,6 @@ public class ComputeServiceBuilder {
         return true;
     }
 
-    /**
-     */
     public void destroy() {
         if (computeService != null) {
             this.computeService.getContext().close();
@@ -203,7 +200,6 @@ public class ComputeServiceBuilder {
         return computeService;
     }
 
-
     public Properties buildRegionZonesConfig() {
         final String regions = getOrNull(JCloudsProperties.REGIONS);
         final String zones = getOrNull(JCloudsProperties.ZONES);
@@ -211,16 +207,12 @@ public class ComputeServiceBuilder {
         Properties jcloudsProperties = newOverrideProperties();
         if (regions != null) {
             List<String> regionList = Arrays.asList(regions.split(","));
-            for (String region : regionList) {
-                regionsSet.add(region);
-            }
+            regionsSet.addAll(regionList);
             jcloudsProperties.setProperty(LocationConstants.PROPERTY_REGIONS, regions);
         }
         if (zones != null) {
             List<String> zoneList = Arrays.asList(zones.split(","));
-            for (String zone : zoneList) {
-                zonesSet.add(zone);
-            }
+            zonesSet.addAll(zoneList);
             jcloudsProperties.setProperty(LocationConstants.PROPERTY_ZONES, zones);
         }
         return jcloudsProperties;
@@ -236,22 +228,22 @@ public class ComputeServiceBuilder {
                 throw new InvalidConfigurationException("Tags keys and value count does not match.");
             }
             for (int i = 0; i < keysList.size(); i++) {
-                tagPairs.add(new AbstractMap.SimpleImmutableEntry(keysList.get(i), valueList.get(i)));
+                tagPairs.add(new AbstractMap.SimpleImmutableEntry<String, String>(keysList.get(i), valueList.get(i)));
             }
         }
     }
 
     public Predicate<ComputeMetadata> buildNodeFilter() {
         nodesFilter = new Predicate<ComputeMetadata>() {
-             @Override
-             public boolean apply(ComputeMetadata nodeMetadata) {
+            @Override
+            public boolean apply(ComputeMetadata nodeMetadata) {
                 if (nodeMetadata == null) {
                     return false;
                 }
                 if (tagPairs.size() > nodeMetadata.getUserMetadata().size()) {
                     return false;
                 }
-                for (AbstractMap.SimpleImmutableEntry entry: tagPairs) {
+                for (AbstractMap.SimpleImmutableEntry entry : tagPairs) {
                     String value = nodeMetadata.getUserMetadata().get(entry.getKey());
                     if (value == null || !value.equals(entry.getValue())) {
                         return false;
@@ -279,15 +271,15 @@ public class ComputeServiceBuilder {
     }
 
     public ContextBuilder newContextBuilder(final String cloudProvider, final String identity,
-                                             final String credential, final String roleName) {
+                                            final String credential, final String roleName) {
         try {
             if (roleName != null && (identity != null || credential != null)) {
-                throw new InvalidConfigurationException("IAM role is configured, identity "
-                        + "or credential propery is not allowed.");
+                throw new InvalidConfigurationException("IAM role is configured,"
+                        + " identity or credential property is not allowed.");
             }
             if (roleName != null && !cloudProvider.equals(AWS_EC2)) {
-                throw new InvalidConfigurationException("IAM role is only supported with aws-ec2, your cloud "
-                        + "provider is " + cloudProvider);
+                throw new InvalidConfigurationException("IAM role is only supported with aws-ec2,"
+                        + " your cloud provider is " + cloudProvider);
             }
             if (cloudProvider.equals(AWS_EC2) && roleName != null) {
                 Supplier<Credentials> credentialsSupplier = new Supplier<Credentials>() {
@@ -320,7 +312,6 @@ public class ComputeServiceBuilder {
     }
 
     private <T extends Comparable> T getOrDefault(PropertyDefinition property, T defaultValue) {
-
         if (properties == null || property == null) {
             return defaultValue;
         }
@@ -329,8 +320,6 @@ public class ComputeServiceBuilder {
         if (value == null) {
             return defaultValue;
         }
-
         return (T) value;
     }
-
 }
