@@ -51,7 +51,7 @@ public class JCloudsDiscoveryFactoryTest extends HazelcastTestSupport {
 
         DiscoveryStrategyConfig providerConfig = discoveryConfig.getDiscoveryStrategyConfigs().iterator().next();
 
-        assertEquals(11, providerConfig.getProperties().size());
+        assertEquals(12, providerConfig.getProperties().size());
         assertEquals("aws-ec2", providerConfig.getProperties().get("provider"));
         assertEquals("test", providerConfig.getProperties().get("identity"));
         assertEquals("test", providerConfig.getProperties().get("credential"));
@@ -64,6 +64,7 @@ public class JCloudsDiscoveryFactoryTest extends HazelcastTestSupport {
         assertEquals("5702", providerConfig.getProperties().get("hz-port"));
         assertEquals("myfile.json", providerConfig.getProperties().get("credentialPath"));
         assertEquals("myRole", providerConfig.getProperties().get("role-name"));
+        assertEquals("http://foo/bar", providerConfig.getProperties().get("endpoint"));
     }
 
     @Test

@@ -42,6 +42,7 @@
                         <property name="hz-port">5702</property>
                         <property name="credentialPath">myfile.json</property>
                         <property name="role-name">myRole</property>
+                        <property name="endpoint">http://foo/bar</property>
                     </properties>
                 </discovery-strategy>
             </discovery-strategies>
