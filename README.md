@@ -56,6 +56,7 @@ Property Name | Type | Description
 `provider`|String|String value that is used to identify ComputeService provider. For example, "google-compute-engine" is used for Google Cloud services. See the <a href="https://jclouds.apache.org/reference/providers/#compute " target="_blank">full provider list here</a>.
 `identity`|String|Cloud Provider identity, can be thought of as a user name for cloud services.
 `credential`|String|Cloud Provider credential, can be thought of as a password for cloud services.
+`endpoint`|String|Defines the endpoint for a gneric API such as OpenStack or CloudStack (optional).
 `zones`|String|Defines zone for a cloud service (optional). Can be used with comma separated values for multiple values.
 `regions`|String|Defines region for a cloud service (optional). Can be used with comma separated values for multiple values.
 `tag-keys`|String|Filters cloud instances with tags (optional). Can be used with comma separated values for multiple values.
