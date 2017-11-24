@@ -21,7 +21,7 @@
     <name>hazelcast-jclouds</name>
     <groupId>com.hazelcast</groupId>
     <artifactId>hazelcast-jclouds</artifactId>
-    <version>3.7.2-SNAPSHOT</version>
+    <version>3.9-SNAPSHOT</version>
     <packaging>jar</packaging>
     <description>Hazelcast In-Memory DataGrid JClouds Discovery Plugin</description>
     <url>http://www.hazelcast.com/</url>
@@ -32,10 +32,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <jdk.version>1.6</jdk.version>
-        <hazelcast.version>3.7</hazelcast.version>
 
-        <jclouds.version>1.9.1</jclouds.version>
-        <log4j.version>1.2.12</log4j.version>
+        <hazelcast.version>3.9</hazelcast.version>
+        <jclouds.version>2.0.2</jclouds.version>
+        <google-compute-engine.version>1.9.3</google-compute-engine.version>
+
+        <log4j.version>1.2.17</log4j.version>
         <junit.version>4.12</junit.version>
         <mockito.version>1.10.19</mockito.version>
 
@@ -54,7 +56,7 @@
         <maven.sonar.plugin.version>2.6</maven.sonar.plugin.version>
         <maven.jacoco.plugin.version>0.7.4.201502262128</maven.jacoco.plugin.version>
         <bytebuddy.version>1.6.12</bytebuddy.version>
-     
+
         <sonar.jacoco.jar>${basedir}/lib/jacocoagent.jar</sonar.jacoco.jar>
         <!--<sonar.phase>post-integration-test</sonar.phase>-->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -266,7 +268,7 @@
         <dependency>
             <groupId>org.apache.jclouds.labs</groupId>
             <artifactId>google-compute-engine</artifactId>
-            <version>${jclouds.version}</version>
+            <version>${google-compute-engine.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -403,7 +405,8 @@
                                 <exclude>**/jsr/**.java</exclude>
                             </excludes>
                             <excludedGroups>
-                                 com.hazelcast.test.annotation.QuickTest,com.hazelcast.test.annotation.SlowTest
+                                com.hazelcast.test.annotation.QuickTest,
+                                com.hazelcast.test.annotation.SlowTest
                             </excludedGroups>
                         </configuration>
                     </plugin>
