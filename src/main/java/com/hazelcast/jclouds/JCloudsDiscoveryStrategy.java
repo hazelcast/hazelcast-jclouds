@@ -30,6 +30,7 @@ import org.jclouds.domain.Location;
 import org.jclouds.domain.LocationScope;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -159,8 +160,8 @@ public class JCloudsDiscoveryStrategy extends AbstractDiscoveryStrategy {
         try {
             InetAddress candidateAddress = null;
             // Iterate all NICs (network interface cards)...
-            for (Enumeration ifaces = java.net.NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
-                java.net.NetworkInterface iface = (java.net.NetworkInterface) ifaces.nextElement();
+            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements(); ) {
+                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
                 for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
                     InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
                     if (!inetAddr.isLoopbackAddress()) {

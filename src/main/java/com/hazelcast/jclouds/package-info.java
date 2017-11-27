@@ -18,4 +18,3 @@
  * Provides interfaces/classes for Hazelcast JClouds Discovery Provider
  */
 package com.hazelcast.jclouds;
-

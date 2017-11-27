@@ -16,7 +16,6 @@
 
 package com.hazelcast.jclouds;
 
-
 import com.hazelcast.config.InvalidConfigurationException;
 import org.jclouds.aws.domain.SessionCredentials;
 
@@ -35,7 +34,6 @@ import static com.hazelcast.util.Preconditions.isNotNull;
  * Build SessionCredentials for JClouds Compute Service API
  * with IAM Role.
  */
-
 public class IAMRoleCredentialSupplierBuilder {
 
     private static final String IAM_ROLE_ENDPOINT = "169.254.169.254";
@@ -72,7 +70,7 @@ public class IAMRoleCredentialSupplierBuilder {
     }
 
     protected Map<String, String> parseIamRole(BufferedReader reader) throws IOException {
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<String, String>();
         Pattern keyPattern = Pattern.compile("\"(.*?)\" : ");
         Pattern valuePattern = Pattern.compile(" : \"(.*?)\",");
         String line;
@@ -95,7 +93,8 @@ public class IAMRoleCredentialSupplierBuilder {
         credentials = new SessionCredentials.Builder()
                 .accessKeyId(keyMaps.get("AccessKeyId"))
                 .secretAccessKey(keyMaps.get("SecretAccessKey"))
-                .sessionToken(keyMaps.get("Token")).build();
+                .sessionToken(keyMaps.get("Token"))
+                .build();
         return credentials;
     }
 }

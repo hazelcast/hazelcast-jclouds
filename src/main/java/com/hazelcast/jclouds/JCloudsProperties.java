@@ -27,7 +27,7 @@ import static com.hazelcast.config.properties.PropertyTypeConverter.INTEGER;
 import static com.hazelcast.config.properties.PropertyTypeConverter.STRING;
 
 /**
- *  Defines the name and default value for JCloud properties
+ * Defines the name and default value for JCloud properties
  */
 public final class JCloudsProperties {
 
@@ -108,5 +108,4 @@ public final class JCloudsProperties {
             }
         }
     }
-
 }
