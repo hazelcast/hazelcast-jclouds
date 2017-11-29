@@ -25,9 +25,11 @@ import com.hazelcast.logging.ILogger;
 /**
  * Bridges the jclouds logging framework to Hazelcast logging.
  */
-
 public class HazelcastLogger implements Logger {
 
+    /**
+     * Creates the jclouds logger that bridges messages to Hazelcast.
+     */
     public static class Factory implements LoggerFactory {
         public Logger getLogger(String category) {
             return new HazelcastLogger(category,
