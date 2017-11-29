@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 public class JCloudsDiscoveryFactoryTest extends HazelcastTestSupport {
 
     @Test
-    public void testParsing() throws Exception {
+    public void testParsing() {
         String xmlFileName = "test-jclouds-config.xml";
         InputStream xmlResource = JCloudsDiscoveryFactoryTest.class.getClassLoader().getResourceAsStream(xmlFileName);
         Config config = new XmlConfigBuilder(xmlResource).build();
@@ -82,7 +82,5 @@ public class JCloudsDiscoveryFactoryTest extends HazelcastTestSupport {
         assertEquals(jCloudsDiscoveryStrategyFactory.getConfigurationProperties().size(), providerConfig.getProperties().size());
         assertTrue(jCloudsDiscoveryStrategyFactory.
                 newDiscoveryStrategy(null, null, new HashMap<String, Comparable>()) instanceof DiscoveryStrategy);
-        
     }
-
 }

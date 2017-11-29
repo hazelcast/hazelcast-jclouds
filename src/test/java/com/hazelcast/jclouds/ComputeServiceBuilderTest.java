@@ -5,7 +5,6 @@ import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.test.HazelcastParallelClassRunner;
 import com.hazelcast.test.HazelcastTestSupport;
 import com.hazelcast.test.annotation.QuickTest;
-import com.hazelcast.util.UuidUtil;
 import org.jclouds.aws.ec2.compute.AWSEC2ComputeService;
 import org.jclouds.compute.ComputeService;
 import org.jclouds.compute.ComputeServiceContext;
@@ -27,6 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static com.hazelcast.util.UuidUtil.newSecureUuidString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -40,24 +40,24 @@ import static org.mockito.Mockito.verify;
 public class ComputeServiceBuilderTest extends HazelcastTestSupport {
 
     @Test
-    public void test_getProperties() throws Exception {
-        Map<String,Comparable> properties = new HashMap<String, Comparable>();
+    public void test_getProperties() {
+        Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("key", "value");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
 
         assertEquals(1, builder.getProperties().size());
         assertEquals("value", builder.getProperties().get("key"));
     }
-    
+
     @Test
-    public void test_getServicePort_returns_default_hz_port() throws Exception {
+    public void test_getServicePort_returns_default_hz_port() {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
 
         assertEquals(builder.getServicePort(), NetworkConfig.DEFAULT_PORT);
     }
 
     @Test
-    public void test_getServicePort_returns_configured_hz_port() throws Exception {
+    public void test_getServicePort_returns_configured_hz_port() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("hz-port", 5703);
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
@@ -67,7 +67,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_getFilteredNodes_with_group_configured() throws Exception {
+    public void test_getFilteredNodes_with_group_configured() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         String groupUnderTest = "group3";
         properties.put("group", groupUnderTest);
@@ -77,14 +77,20 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
 
         Set<NodeMetadata> nodes = new HashSet<NodeMetadata>();
         for (int i = 0; i < 5; i++) {
-            nodes.add(new NodeMetadataBuilder().id(UuidUtil.newSecureUuidString()).group("group" + i)
-                    .status(NodeMetadata.Status.RUNNING).build());
+            nodes.add(new NodeMetadataBuilder()
+                    .id(newSecureUuidString())
+                    .group("group" + i)
+                    .status(NodeMetadata.Status.RUNNING)
+                    .build());
         }
-        nodes.add(new NodeMetadataBuilder().id(UuidUtil.newSecureUuidString()).group(groupUnderTest)
-                .status(NodeMetadata.Status.RUNNING).build());
+        nodes.add(new NodeMetadataBuilder()
+                .id(newSecureUuidString())
+                .group(groupUnderTest)
+                .status(NodeMetadata.Status.RUNNING)
+                .build());
         doReturn(nodes).when(mockComputeService).listNodesDetailsMatching(null);
 
-        Set<NodeMetadata> result = (Set) builder.getFilteredNodes();
+        Set<NodeMetadata> result = (Set<NodeMetadata>) builder.getFilteredNodes();
 
         assertEquals(2, result.size());
         for (NodeMetadata node : result) {
@@ -93,7 +99,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_destroy_calls_computeService_destroy() throws Exception {
+    public void test_destroy_calls_computeService_destroy() {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
         ComputeService mockComputeService = mock(ComputeService.class);
         ComputeServiceContext mockComputeServiceContext = mock(ComputeServiceContext.class);
@@ -104,9 +110,8 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         verify(mockComputeServiceContext).close();
     }
 
-
     @Test
-    public void test_buildZonesConfig_parses_multiple_zones() throws Exception {
+    public void test_buildZonesConfig_parses_multiple_zones() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("zones", "zone1,zone2,zone3");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
@@ -119,7 +124,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_buildZonesConfig_parse_single_zone() throws Exception {
+    public void test_buildZonesConfig_parse_single_zone() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("zones", "zone1");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
@@ -130,7 +135,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_buildZonesConfig_parse_multiple_regions() throws Exception {
+    public void test_buildZonesConfig_parse_multiple_regions() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("regions", "region1,region2,region3");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
@@ -143,7 +148,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_buildZonesConfig_parse_single_region() throws Exception {
+    public void test_buildZonesConfig_parse_single_region() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("regions", "region1");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
@@ -154,77 +159,72 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_isNodeInsideZones_when_zone_set_is_empty() throws Exception {
+    public void test_isNodeInsideZones_when_zone_set_is_empty() {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
         builder.buildRegionZonesConfig();
 
-        assertTrue(builder.isNodeInsideZones(
-                getRunningNodeMetaDataAtLocation(LocationScope.ZONE, "testZone")));
-
+        assertTrue(builder.isNodeInsideZones(getRunningNodeMetaDataAtLocation(LocationScope.ZONE, "testZone")));
     }
 
     @Test
-    public void test_isNodeInsideZones_when_node_is_not_in_zone_set() throws Exception {
+    public void test_isNodeInsideZones_when_node_is_not_in_zone_set() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("zones", "zone1,zone2");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
 
-        assertFalse(builder.isNodeInsideZones(
-                getRunningNodeMetaDataAtLocation(LocationScope.ZONE, "testZone")));
-
+        assertFalse(builder.isNodeInsideZones(getRunningNodeMetaDataAtLocation(LocationScope.ZONE, "testZone")));
     }
 
     @Test
-    public void test_isNodeInsideZones_when_node_is_in_zone_set() throws Exception {
+    public void test_isNodeInsideZones_when_node_is_in_zone_set() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("zones", "zone1,testZone");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
 
-        assertTrue(builder.isNodeInsideZones(
-                getRunningNodeMetaDataAtLocation(LocationScope.ZONE, "testZone")));
-
+        assertTrue(builder.isNodeInsideZones(getRunningNodeMetaDataAtLocation(LocationScope.ZONE, "testZone")));
     }
 
     @Test
-    public void test_isNodeInsideRegions_when_region_set_is_empty() throws Exception {
+    public void test_isNodeInsideRegions_when_region_set_is_empty() {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
         builder.buildRegionZonesConfig();
 
-        assertTrue(builder.isNodeInsideRegions(
-                getRunningNodeMetaDataAtLocation(LocationScope.REGION, "testRegion")));
-
+        assertTrue(builder.isNodeInsideRegions(getRunningNodeMetaDataAtLocation(LocationScope.REGION, "testRegion")));
     }
 
     @Test
-    public void test_isNodeInsideRegions_when_node_is_not_in_region_set() throws Exception {
+    public void test_isNodeInsideRegions_when_node_is_not_in_region_set() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("regions", "region1,region2");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
 
-        assertFalse(builder.isNodeInsideRegions(
-                getRunningNodeMetaDataAtLocation(LocationScope.REGION, "testRegion")));
-
+        assertFalse(builder.isNodeInsideRegions(getRunningNodeMetaDataAtLocation(LocationScope.REGION, "testRegion")));
     }
 
     @Test
-    public void test_isNodeInsideRegions_when_node_is__in_region_set() throws Exception {
+    public void test_isNodeInsideRegions_when_node_is__in_region_set() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("regions", "region1,testRegion");
         ComputeServiceBuilder builder = new ComputeServiceBuilder(properties);
         builder.buildRegionZonesConfig();
 
-        assertTrue(builder.isNodeInsideRegions(
-                getRunningNodeMetaDataAtLocation(LocationScope.REGION, "testRegion")));
-
+        assertTrue(builder.isNodeInsideRegions(getRunningNodeMetaDataAtLocation(LocationScope.REGION, "testRegion")));
     }
 
     private NodeMetadata getRunningNodeMetaDataAtLocation(LocationScope scope, String id) {
-        Location location = new LocationBuilder().scope(scope).id(id).description("desc").build();
-        return new NodeMetadataBuilder().location(location).id(UuidUtil.newSecureUuidString()).
-                status(NodeMetadata.Status.RUNNING).build();
+        Location location = new LocationBuilder()
+                .scope(scope)
+                .id(id)
+                .description("desc")
+                .build();
+        return new NodeMetadataBuilder()
+                .location(location)
+                .id(newSecureUuidString())
+                .status(NodeMetadata.Status.RUNNING)
+                .build();
     }
 
     @Test
@@ -244,13 +244,13 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         builder.buildTagConfig();
 
         assertEquals(2, builder.getTagPairs().size());
-        assertTrue(builder.getTagPairs().contains(new AbstractMap.SimpleImmutableEntry("tag1", "value1")));
-        assertTrue(builder.getTagPairs().contains(new AbstractMap.SimpleImmutableEntry("tag2", "value2")));
-        assertFalse(builder.getTagPairs().contains(new AbstractMap.SimpleImmutableEntry("tag1", "value2")));
+        assertTrue(builder.getTagPairs().contains(new AbstractMap.SimpleImmutableEntry<String, String>("tag1", "value1")));
+        assertTrue(builder.getTagPairs().contains(new AbstractMap.SimpleImmutableEntry<String, String>("tag2", "value2")));
+        assertFalse(builder.getTagPairs().contains(new AbstractMap.SimpleImmutableEntry<String, String>("tag1", "value2")));
     }
 
     @Test
-    public void test_buildNodeFilter_with_null_NodeMetadata() throws Exception {
+    public void test_buildNodeFilter_with_null_NodeMetadata() {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
         Predicate<ComputeMetadata> nodeFilter = builder.buildNodeFilter();
 
@@ -258,7 +258,7 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void test_buildNodeFilter_with_NodeMetadata_with_multiple_tags() throws Exception {
+    public void test_buildNodeFilter_with_NodeMetadata_with_multiple_tags() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("tag-keys", "tag1,tag2");
         properties.put("tag-values", "value1,value2");
@@ -269,16 +269,17 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         Map<String, String> userMetaData = new HashMap<String, String>();
         userMetaData.put("tag1", "value1");
 
-        NodeMetadata metadata = new NodeMetadataBuilder().
-                userMetadata(userMetaData).id(UuidUtil.newSecureUuidString()).
-                status(NodeMetadata.Status.RUNNING).build();
+        NodeMetadata metadata = new NodeMetadataBuilder()
+                .userMetadata(userMetaData)
+                .id(newSecureUuidString())
+                .status(NodeMetadata.Status.RUNNING)
+                .build();
 
         assertFalse(nodeFilter.apply(metadata));
-
     }
 
     @Test
-    public void test_buildNodeFilter_with_NodeMetadata_with_single_tag() throws Exception {
+    public void test_buildNodeFilter_with_NodeMetadata_with_single_tag() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("tag-keys", "tag1");
         properties.put("tag-values", "value1");
@@ -289,16 +290,17 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         Map<String, String> userMetaData = new HashMap<String, String>();
         userMetaData.put("tag1", "value2");
 
-        NodeMetadata metadata = new NodeMetadataBuilder().
-                userMetadata(userMetaData).id(UuidUtil.newSecureUuidString()).
-                status(NodeMetadata.Status.RUNNING).build();
+        NodeMetadata metadata = new NodeMetadataBuilder()
+                .userMetadata(userMetaData)
+                .id(newSecureUuidString())
+                .status(NodeMetadata.Status.RUNNING)
+                .build();
 
         assertFalse(nodeFilter.apply(metadata));
-
     }
 
     @Test
-    public void test_buildNodeFilter_with_NodeMetadata_with_multiple_tags_with_and_relation() throws Exception {
+    public void test_buildNodeFilter_with_NodeMetadata_with_multiple_tags_with_and_relation() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("tag-keys", "Owner,Stack");
         properties.put("tag-values", "DbAdmin,Production");
@@ -310,16 +312,17 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         userMetaData.put("Owner", "DbAdmin");
         userMetaData.put("Stack", "Production");
 
-        NodeMetadata metadata = new NodeMetadataBuilder().
-                userMetadata(userMetaData).id(UuidUtil.newSecureUuidString()).
-                status(NodeMetadata.Status.RUNNING).build();
+        NodeMetadata metadata = new NodeMetadataBuilder()
+                .userMetadata(userMetaData)
+                .id(newSecureUuidString())
+                .status(NodeMetadata.Status.RUNNING)
+                .build();
 
         assertTrue(nodeFilter.apply(metadata));
-
     }
 
     @Test
-    public void test_buildNodeFilter_with_NodeMetadata_with_multiple_tags_with_and_relation_where_user_metadata_has_more_elements() throws Exception {
+    public void test_buildNodeFilter_with_NodeMetadata_with_multiple_tags_with_and_relation_where_user_metadata_has_more_elements() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("tag-keys", "Owner,Stack");
         properties.put("tag-values", "DbAdmin,Production");
@@ -332,16 +335,17 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         userMetaData.put("Stack", "Production");
         userMetaData.put("Number", "1");
 
-        NodeMetadata metadata = new NodeMetadataBuilder().
-                userMetadata(userMetaData).id(UuidUtil.newSecureUuidString()).
-                status(NodeMetadata.Status.RUNNING).build();
+        NodeMetadata metadata = new NodeMetadataBuilder()
+                .userMetadata(userMetaData)
+                .id(newSecureUuidString())
+                .status(NodeMetadata.Status.RUNNING)
+                .build();
 
         assertTrue(nodeFilter.apply(metadata));
-
     }
 
     @Test
-    public void test_buildNodeFilter_with_NodeMetadata_with_single_value() throws Exception {
+    public void test_buildNodeFilter_with_NodeMetadata_with_single_value() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("tag-keys", "tag1");
         properties.put("tag-values", "value1");
@@ -352,38 +356,35 @@ public class ComputeServiceBuilderTest extends HazelcastTestSupport {
         Map<String, String> userMetaData = new HashMap<String, String>();
         userMetaData.put("tag1", "value1");
 
-        NodeMetadata metadata = new NodeMetadataBuilder().
-                userMetadata(userMetaData).id(UuidUtil.newSecureUuidString()).
-                status(NodeMetadata.Status.RUNNING).build();
+        NodeMetadata metadata = new NodeMetadataBuilder()
+                .userMetadata(userMetaData)
+                .id(newSecureUuidString())
+                .status(NodeMetadata.Status.RUNNING)
+                .build();
 
         assertTrue(nodeFilter.apply(metadata));
-
     }
 
     @Test
     public void test_getCredentialFromFile_when_google_compute_engine() throws Exception {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
-        URL resourceUrl = getClass().
-                getResource("/google-json-credential.json");
+        URL resourceUrl = getClass().getResource("/google-json-credential.json");
         String decodedURL = URLDecoder.decode(resourceUrl.getFile(), "UTF-8");
 
-        assertEquals("key", builder.getCredentialFromFile("google-compute-engine",
-                decodedURL));
+        assertEquals("key", builder.getCredentialFromFile("google-compute-engine", decodedURL));
     }
 
     @Test
     public void test_getCredentialFromFile_when_cloud_provider_other_than_google() throws Exception {
         ComputeServiceBuilder builder = new ComputeServiceBuilder(new HashMap<String, Comparable>());
-        URL resourceUrl = getClass().
-                getResource("/key.properties");
+        URL resourceUrl = getClass().getResource("/key.properties");
         String decodedURL = URLDecoder.decode(resourceUrl.getFile(), "UTF-8");
 
-        assertEquals("cloudkey", builder.getCredentialFromFile("gogrid",
-                decodedURL));
+        assertEquals("cloudkey", builder.getCredentialFromFile("gogrid", decodedURL));
     }
 
     @Test
-    public void test_compute_service_builder_return_correct_api_class() throws Exception {
+    public void test_compute_service_builder_return_correct_api_class() {
         Map<String, Comparable> properties = new HashMap<String, Comparable>();
         properties.put("provider", "aws-ec2");
         properties.put("identity", "id");

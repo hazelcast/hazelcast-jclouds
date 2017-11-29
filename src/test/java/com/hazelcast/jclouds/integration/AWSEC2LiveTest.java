@@ -14,22 +14,19 @@ import java.util.Map;
 @RunWith(HazelcastSerialClassRunner.class)
 public class AWSEC2LiveTest extends AbstractLiveTest {
 
-    public static final String AWS_PROVIDER   = "aws-ec2";
-    public static final String AWS_IDENTITY   =  System.getProperty("test.aws-ec2.identity");
-    public static final String AWS_CREDENTIAL =  System.getProperty("test.aws-ec2.credential");
+    private static final String AWS_PROVIDER = "aws-ec2";
+    private static final String AWS_IDENTITY = System.getProperty("test.aws-ec2.identity");
+    private static final String AWS_CREDENTIAL = System.getProperty("test.aws-ec2.credential");
 
-    public static LiveComputeServiceUtil builder =
-            new LiveComputeServiceUtil(AWS_PROVIDER, AWS_IDENTITY,
-                    AWS_CREDENTIAL);
-
+    private static LiveComputeServiceUtil builder = new LiveComputeServiceUtil(AWS_PROVIDER, AWS_IDENTITY, AWS_CREDENTIAL);
 
     @BeforeClass
-    public static void provisionNodes() throws Exception {
+    public static void provisionNodes() {
         builder.provisionNodes();
     }
 
     @AfterClass
-    public static void destroyNodes() throws Exception {
+    public static void destroyNodes() {
         builder.destroyNodes();
     }
 
@@ -44,11 +41,11 @@ public class AWSEC2LiveTest extends AbstractLiveTest {
 
     @Override
     protected String getRegion1() {
-        return LiveComputeServiceUtil.AWS_REGION1;
+        return LiveComputeServiceUtil.AWS_REGION_1;
     }
 
     @Override
     protected String getRegion2() {
-        return LiveComputeServiceUtil.AWS_REGION2;
+        return LiveComputeServiceUtil.AWS_REGION_2;
     }
 }

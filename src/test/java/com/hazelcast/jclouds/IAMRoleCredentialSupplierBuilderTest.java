@@ -24,7 +24,6 @@ import static org.mockito.Mockito.when;
 @Category(QuickTest.class)
 public class IAMRoleCredentialSupplierBuilderTest extends HazelcastTestSupport {
 
-
     @Test(expected = IllegalArgumentException.class)
     public void whenIamRoleIsNull() {
         new IAMRoleCredentialSupplierBuilder().withRoleName(null);
@@ -32,22 +31,21 @@ public class IAMRoleCredentialSupplierBuilderTest extends HazelcastTestSupport {
 
     @Test
     public void whenIamRoleIsNotNull() {
-        IAMRoleCredentialSupplierBuilder builder =
-                new IAMRoleCredentialSupplierBuilder().withRoleName("role");
+        IAMRoleCredentialSupplierBuilder builder = new IAMRoleCredentialSupplierBuilder().withRoleName("role");
         assertNull(builder.getCredentials());
         assertEquals(builder.getRoleName(), "role");
     }
 
     @Test
     public void testParseIamRole() throws IOException {
-        String s = "{\n" +
-                "  \"Code\" : \"Success\",\n" +
-                "  \"LastUpdated\" : \"2015-09-06T21:17:26Z\",\n" +
-                "  \"Type\" : \"AWS-HMAC\",\n" +
-                "  \"AccessKeyId\" : \"ASIAIEXAMPLEOXYDA\",\n" +
-                "  \"SecretAccessKey\" : \"hOCVge3EXAMPLExSJ+B\",\n" +
-                "  \"Token\" : \"AQoDYXdzEE4EXAMPLE2UGAFshkTsyw7gojLdiEXAMPLE+1SfSRTfLR\",\n" +
-                "  \"Expiration\" : \"2015-09-07T03:19:56Z\"\n}";
+        String s = "{\n"
+                + "  \"Code\" : \"Success\",\n"
+                + "  \"LastUpdated\" : \"2015-09-06T21:17:26Z\",\n"
+                + "  \"Type\" : \"AWS-HMAC\",\n"
+                + "  \"AccessKeyId\" : \"ASIAIEXAMPLEOXYDA\",\n"
+                + "  \"SecretAccessKey\" : \"hOCVge3EXAMPLExSJ+B\",\n"
+                + "  \"Token\" : \"AQoDYXdzEE4EXAMPLE2UGAFshkTsyw7gojLdiEXAMPLE+1SfSRTfLR\",\n"
+                + "  \"Expiration\" : \"2015-09-07T03:19:56Z\"\n}";
         StringReader sr = new StringReader(s);
         BufferedReader br = new BufferedReader(sr);
         IAMRoleCredentialSupplierBuilder iamRoleCredentialSupplierBuilder = new IAMRoleCredentialSupplierBuilder();
@@ -62,9 +60,9 @@ public class IAMRoleCredentialSupplierBuilderTest extends HazelcastTestSupport {
     }
 
     @Test
-    public void testBuild() throws IOException {
+    public void testBuild() {
         IAMRoleCredentialSupplierBuilder iamRoleCredentialSupplierBuilder = mock(IAMRoleCredentialSupplierBuilder.class);
-        Map map = new HashMap();
+        Map<String, String> map = new HashMap<String, String>();
         map.put("AccessKeyId", "ExampleAccessKeyId");
         map.put("SecretAccessKey", "ExampleSecretAccessKey");
         map.put("Token", "ExampleToken");
@@ -82,5 +80,4 @@ public class IAMRoleCredentialSupplierBuilderTest extends HazelcastTestSupport {
     public void parseIamRole_withInvalidAwsConfiguration() {
         new IAMRoleCredentialSupplierBuilder().getKeysFromIamRole();
     }
-
 }
