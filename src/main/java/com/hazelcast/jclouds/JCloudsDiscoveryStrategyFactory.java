@@ -37,6 +37,7 @@ public class JCloudsDiscoveryStrategyFactory implements DiscoveryStrategyFactory
 
     static {
         List<PropertyDefinition> propertyDefinitions = new ArrayList<PropertyDefinition>();
+        propertyDefinitions.add(JCloudsProperties.ENDPOINT);
         propertyDefinitions.add(JCloudsProperties.CREDENTIAL);
         propertyDefinitions.add(JCloudsProperties.CREDENTIAL_PATH);
         propertyDefinitions.add(JCloudsProperties.GROUP);

@@ -46,6 +46,10 @@ public final class JCloudsProperties {
      */
     public static final PropertyDefinition CREDENTIAL = property("credential", STRING);
     /**
+     * Property used to define the endpoint for generic APIs such as OpenStack or CloudStack.
+     */
+    public static final PropertyDefinition ENDPOINT = property("endpoint", STRING);
+    /**
      * Property used to define zones for node filtering
      */
     public static final PropertyDefinition ZONES = property("zones", STRING);

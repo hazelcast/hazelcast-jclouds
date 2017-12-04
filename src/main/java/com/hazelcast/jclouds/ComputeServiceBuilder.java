@@ -19,10 +19,12 @@ package com.hazelcast.jclouds;
 import com.google.common.base.Charsets;
 import com.google.common.base.Predicate;
 import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.io.Files;
 import com.hazelcast.config.InvalidConfigurationException;
 import com.hazelcast.config.NetworkConfig;
 import com.hazelcast.config.properties.PropertyDefinition;
+import com.hazelcast.jclouds.logging.HazelcastLoggingModule;
 import com.hazelcast.logging.ILogger;
 import com.hazelcast.logging.Logger;
 import org.jclouds.Constants;
@@ -170,6 +172,7 @@ public class ComputeServiceBuilder {
      */
     ComputeService build() {
         final String cloudProvider = getOrNull(JCloudsProperties.PROVIDER);
+        final String endpoint = getOrNull(JCloudsProperties.ENDPOINT);
         final String identity = getOrNull(JCloudsProperties.IDENTITY);
         String credential = getOrNull(JCloudsProperties.CREDENTIAL);
         final String credentialPath = getOrNull(JCloudsProperties.CREDENTIAL_PATH);
@@ -188,12 +191,19 @@ public class ComputeServiceBuilder {
 
         final String roleName = getOrNull(JCloudsProperties.ROLE_NAME);
         ContextBuilder contextBuilder = newContextBuilder(cloudProvider, identity, credential, roleName);
+        if (endpoint != null) {
+            if (LOGGER.isFinestEnabled()) {
+                LOGGER.finest("Using custom endpoint: " + endpoint);
+            }
+            contextBuilder.endpoint(endpoint);
+        }
 
         Properties jcloudsProperties = buildRegionZonesConfig();
         buildTagConfig();
         buildNodeFilter();
 
         computeService = contextBuilder.overrides(jcloudsProperties)
+                .modules(ImmutableSet.of(new HazelcastLoggingModule()))
                 .buildView(ComputeServiceContext.class)
                 .getComputeService();
 
