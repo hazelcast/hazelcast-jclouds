@@ -39,7 +39,7 @@ public class IAMRoleCredentialSupplierBuilder {
     private static final String IAM_ROLE_ENDPOINT = "169.254.169.254";
     private String roleName;
     private SessionCredentials credentials;
-    private String query = "latest/meta-data/iam/security-credentials/";
+    private String query = "/latest/meta-data/iam/security-credentials/";
 
     public IAMRoleCredentialSupplierBuilder() {
     }
