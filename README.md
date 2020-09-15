@@ -1,3 +1,7 @@
+# DEPRECATED Hazelcast JClouds Plugin
+
+This repository is deprecated and no longer maintained.
+
 # Table of Contents
 
 * [Supported Versions](#supported-versions)
