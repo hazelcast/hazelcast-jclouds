@@ -29,7 +29,7 @@
 
         <jdk.version>1.6</jdk.version>
 
-        <hazelcast.version>3.9</hazelcast.version>
+        <hazelcast.version>3.11</hazelcast.version>
         <jclouds.version>2.0.2</jclouds.version>
         <google-compute-engine.version>1.9.3</google-compute-engine.version>
 
